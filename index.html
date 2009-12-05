@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <!--<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />-->
+  </head>
+
+  <body>
+    <div>
+      <p name="text">{{ text }}</p>
+    </div>
+    <form action="/" method="get">
+      <div>Number of phrases: <input name="num_phrases" type="text" value="{{ num_phrases }}"></div>
+      <div>Break line? <input {{ checked }} name="break_line" type="checkbox" value="true"></div>
+      <div>
+	<input type="submit" value="New Text">
+      </div>
+    </form>
+  </body>
+</html>

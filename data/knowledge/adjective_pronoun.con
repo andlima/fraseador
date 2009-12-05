@@ -1,0 +1,13 @@
+INDEFINIDO:algum:determinante
+#INDEFINIDO:nenhum:determinante
+INDEFINIDO:todo:determinante@m,*
+INDEFINIDO:outro:determinante
+INDEFINIDO:muito:determinante@*,p
+INDEFINIDO:pouco:determinante@*,p
+INDEFINIDO:certo:determinante
+INDEFINIDO:vário:determinante@*,p
+DEMONSTRATIVO:aquele:determinante
+DEMONSTRATIVO:esse:determinante
+DEMONSTRATIVO:este:determinante
+INDEFINIDO:qualquer:determinante@*,s
+INDEFINIDO:cada:determinante

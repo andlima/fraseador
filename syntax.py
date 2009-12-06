@@ -10,177 +10,232 @@ import semantics
 import semantics.concept
 import word_factory
 
+import tree
 from tree import Tree
 
-def adjAdn(person=None, gender=None, number=None, S=None, posicao=None):
-    if person is None:
-        person = utils.aleatory('p')
-    if gender is None:
-        gender = utils.aleatory('g')
-    if number is None:
-        number = utils.aleatory('n')
-    next = None
-    if posicao == 'pre':
-        if utils.percent(35):
-            det = word_factory.getNominal('article', gender, number)
-        elif utils.percent(50):
-            det = word_factory.getAdjectivePronoun(gender, number, 'determinante')
-        else:
-            det = word_factory.getPossessivePronoun(
-                gender, number, utils.aleatory('p'), utils.aleatory('n'))
-        L = [Tree(det)]
-        next = det
-    elif posicao == 'pos':
-        if utils.percent(50):
-            L = [Tree(word_factory.getRelativePronoun(gender, number)),
-                 sintagmaVerbal(person, gender, number, S=S)]
-        elif utils.percent(50):
-            L = [Tree(word_factory.getRelativePronoun(gender, number)),
-                 oracaoSimples(tran='vtd', OD=S)]
-        else:
-            oracaoExpl = oracaoSimples(tran='vti', OI=S)
-            prep = word_factory.getPreposition(oracaoExpl.info['prep'],
-                                 gender, number, None)
-            L = [Tree(prep),
-                 Tree(word_factory.getRelativePronoun(gender, number)),
-                 oracaoExpl]
-    else:
-        L = [Tree(word_factory.getNominal('adjective', gender, number, S))]
-    return Tree('adjunto adnominal', L, {'next': next})
+#utils.debug = True
 
-def sintagmaNominal(person=None, gender=None, number=None, funcao='S',
-                    modo=None, prep=None, S=None):
-    if person is None:
-        if S is not None and \
-                semantics.verifySemantics(S, 'PESSOA'):
-            person = utils.aleatory('p')
-        else: person = '3'
-    if gender is None:
-        gender = utils.aleatory('g')
-    if number is None:
-        number = utils.aleatory('n')
-    if modo is None:
-        if person != '3' or utils.percent(15):
-            modo = 'personal_pronoun'
+##########
+
+@utils.dump_args
+def determiner(person=None, gender=None, number=None, function='S',
+               kind=None, S=None):
+    if utils.percent(35):
+        det = word_factory.getNominal('article', gender, number)
+        next = (det.value.index, 'article')
+    elif utils.percent(50):
+        det = word_factory.getAdjectivePronoun(
+            gender, number, 'determiner')
+        next = (det.value.index, 'adjective_pronoun')
+    else:
+        det = word_factory.getPossessivePronoun(
+            gender, number, utils.aleatory('person'), utils.aleatory('number'))
+        next = (det.value.index, 'possessive_pronoun')
+    return Tree('determiner', [det], {'next': next})
+
+@utils.dump_args
+def adnominalAdjunct(person=None, gender=None, number=None, function='S',
+                     kind=None, S=None, position='pos'):
+    L = []
+
+    if kind == 'noun':
+        if utils.percent(30):
+            # menino feio
+            # bola feia
+            adjective = word_factory.getNominal('adjective', gender, number, S)
+            L.append(adjective)
+        elif utils.percent(50):
+            # menino que correu
+            # bola que caiu
+            L = [word_factory.getRelativePronoun(gender, number, None),
+                 verbPhrase(person, gender, number, S=S)]
+        elif utils.percent(50):
+            # menino que a mãe ama
+            # bola que o menino chutou
+            L = [word_factory.getRelativePronoun(gender, number, None),
+                 simpleClause(tran='vtd', OD=S)]
         else:
-            modo = 'noun'
-    if modo == 'noun':
+            # menino de quem a mãe gosta
+            # bola da qual o menino gosta
+            that_clause = simpleClause(tran='vti', OI=S)
+            prep = word_factory.getPreposition(that_clause.info['prep'],
+                                               gender, number, None)
+            L = [prep,
+                 word_factory.getRelativePronoun(gender, number, None),
+                 that_clause]
+
+    elif kind == 'personal_pronoun' and function == 'S':
+        if utils.percent(30):
+            # eu que corri
+            L = [word_factory.getNominal(
+                    'relative_pronoun', gender, number, None),
+                 verbPhrase(person, gender, number, S=S)]
+        
+    if L:
+        return Tree('adnominal adjunct', L, {})
+    else:
+        return None
+
+###########
+
+@utils.dump_args
+@utils.randomize('gender', 'number')
+def noun(person=None, gender=None, number=None, function='S',
+         kind=None, S=None):
+
+    if kind == 'noun':
         if person != '3':
-            raise 'Sintagma nominal em modo substantivo ' \
-                'deve estar na terceira pessoa'
-        nucleo = word_factory.getNominal('noun', gender, number, S)
-        L = [Tree(nucleo)]
-        if number == 's' or utils.percent(15):
-            adjAdnPre = adjAdn(person, gender, number, S, 'pre')
-            next = (adjAdnPre.info['next'].value.index,
-                    adjAdnPre.info['next'].category)
-            L = [adjAdnPre] + L
-        else:
-            next = None
-        if utils.percent(40):
-            L = L + [adjAdn(person, gender, number, S)]
-        if utils.percent(20):
-            L = L + [adjAdn(person, gender, number, S, 'pos')]
-    elif modo == 'personal_pronoun':
-        if funcao == 'OD':
-            nucleo = word_factory.getPersonalPronoun(
-                person, number, gender, funcao, 'a')
-        else:
-            nucleo = word_factory.getPersonalPronoun(
-                person, number, gender, funcao, 't')
-        L = [Tree(nucleo)]
-        next = (nucleo.value.index, nucleo.category)
+            raise 'Noun phrase for NOUN kind must be on the 3rd person'
+        head = word_factory.getNominal('noun', gender, number, S)
+        next = (head.value.index, 'noun')
+    elif kind == 'personal_pronoun':
+        tonic = 'a' if function == 'OD' else 't'
+        head = word_factory.getPersonalPronoun(
+            person, number, gender, function, tonic)
+        next = (head.value.index, 'personal_pronoun')
     else:
-        raise 'Modo invalido', modo
-    if prep is not None:
-        preposicao = word_factory.getPreposition(prep, gender, number, next)
-        if preposicao.value.contracts(next):
-            L = [Tree(preposicao)] + L[1:]
-        else:
-            L = [Tree(preposicao)] + L
-    return Tree('sintagma nominal', L, {'nucleo': nucleo})
+        raise 'Invalid kind for noun phrase', kind
+    return Tree('noun', [head], {'head': head, 'next': next})
 
-def sintagmaVerbal(person=None, gender=None, number=None, tense=None,
-                   tran=None, S=None, OD=None, OI=None):
+@utils.dump_args
+@utils.randomize('gender', 'number')
+def nounBar(person=None, gender=None, number=None, function='S',
+            kind=None, S=None):
+    n = noun(person, gender, number, function, kind, S)
+    a = None
+    if utils.percent(50):
+        a = adnominalAdjunct(person, gender, number, function, kind, S)
+    if a:
+        L = [n, a]
+    else:
+        L = [n]
+    return Tree('noun-bar', L, {'head': n.info['head'], 'next': n.info['next']})
+
+@utils.dump_args
+@utils.randomize('gender', 'number')
+def nounPhrase(person=None, gender=None, number=None, function='S',
+               kind=None, S=None):
+
     if person is None:
-        person = utils.aleatory('p')
-    if gender is None:
-        gender = utils.aleatory('g')
-    if number is None:
-        number = utils.aleatory('n')
-    if tense is None:
-        tense = utils.aleatory('t')
+        if S and semantics.verifySemantics(S, 'PESSOA'):
+            person = utils.aleatory('person')
+        else: person = '3'
+    if kind is None:
+        if person != '3' or utils.percent(15):
+            kind = 'personal_pronoun'
+        else:
+            kind = 'noun'
 
-    # Núcleo do sintagma verbal é sempre um verbo
-    nucleo = word_factory.getVerb(person, number, tense, tran, S=S, OD=OD, OI=OI)
+    L = []
+    next = None
+    if kind == 'noun':
+        det = determiner(person, gender, number, function, kind, S)
+        L.append(det)
+        next = det.info['next']
+    n = nounBar(person, gender, number, function, kind, S)
 
-    # tran (transitividade) depende do verbo escolhido
-    if tran is None: tran = nucleo.info['entity'].transitivity
+    if not next:
+        next = n.info['next']
 
-    # L será o vetor 'filhos' da raiz do sintagma nominal
-    L = [Tree(nucleo)]
+    L.append(n)
+    return Tree('noun phrase', L, {'head': n.info['head'], 'next': next})
+
+###########
+
+@utils.dump_args
+@utils.randomize('gender', 'number')
+def prepositionalPhrase(prep=None, person=None, gender=None,
+                        number=None, function='S', kind=None, S=None):
+
+    if person is None:
+        if S and semantics.verifySemantics(S, 'PESSOA'):
+            person = utils.aleatory('person')
+        else:
+            person = '3'
+    if kind is None:
+        if person != '3' or utils.percent(15):
+            kind = 'personal_pronoun'
+        else:
+            kind = 'noun'
+
+    np = nounPhrase(person, gender, number, function, kind, S)
+    next = np.info['next']
+    L = [np]
+
+    p = word_factory.getPreposition(prep, gender, number, next)
+
+    L = [Tree("preposition", [p])] + L
+
+    return Tree('prepositional phrase', L, {'head': np.info['head']})
+
+###########
+
+@utils.dump_args
+@utils.randomize('person', 'gender', 'number', 'tense')
+def verb(person=None, gender=None, number=None, tense=None,
+         tran=None, S=None, OD=None, OI=None):
+
+    head = word_factory.getVerb(person, number, tense, tran, S=S, OD=OD, OI=OI)
+    L = [head]
+
+    if tran is None:
+        tran = head.info['entity'].transitivity
 
     if tran == 'vpi':
         L = [word_factory.getPersonalPronoun(person, number, gender, 'R', 'a')] + L
     if tran in ('vti', 'vtdi') and OI is None:
-        xOI = sintagmaNominal(funcao='OI',
-                              S=nucleo.info['entity'].concept['OI'],
-                              prep=nucleo.info['entity'].prep)
+        xOI = prepositionalPhrase(function='OI',
+                                  S=head.info['entity'].concept['OI'],
+                                  prep=head.info['entity'].prep)
         L = L + [xOI]
     if tran in ('vtd', 'vtdi') and OD is None:
-        xOD = sintagmaNominal(funcao='OD',
-                              S=nucleo.info['entity'].concept['OD'])
-        if xOD.info['nucleo'].category == 'personal_pronoun':
+        xOD = nounPhrase(function='OD',
+                         S=head.info['entity'].concept['OD'])
+        if xOD.info['head'].category == 'personal_pronoun':
             L = [xOD] + L
         else:
             L = L + [xOD]
-    return Tree('sintagma verbal', L, {'nucleo':nucleo})
 
-def oracaoSimples(person=None, gender=None, number=None, tense=None,
-                  tran=None, S=None, OD=None, OI=None):
-    if person is None:
-        person = utils.aleatory('p')
-    if gender is None:
-        gender = utils.aleatory('g')
-    if number is None:
-        number = utils.aleatory('n')
-    if tense is None:
-        tense = utils.aleatory('t')
+    return Tree('verb', L, {'head': head})
 
-    sv = sintagmaVerbal(person, gender, number, tense, tran, S, OD, OI)
-    obj_nucleo = sv.info['nucleo'].info['entity']
-    sn = sintagmaNominal(person, gender, number, 'S',
-                         S=obj_nucleo.concept['base'])
+@utils.dump_args
+@utils.randomize('person', 'gender', 'number', 'tense')
+def verbBar(person=None, gender=None, number=None, tense=None,
+            tran=None, S=None, OD=None, OI=None):
+    v = verb(person, gender, number, tense, tran, S, OD, OI)
+    return Tree('verb-bar', [v], {'head': v.info['head']})
 
-    if OI is None:
-        prep = None
-    else:
-        prep = obj_nucleo.prep
+@utils.dump_args
+@utils.randomize('person', 'gender', 'number', 'tense')
+def verbPhrase(person=None, gender=None, number=None, tense=None,
+                   tran=None, S=None, OD=None, OI=None):
+    vb = verbBar(person, gender, number, tense, tran, S, OD, OI)
+    L = [vb]
 
-    return Tree('oracao', [sn, sv], {'prep': prep})
+    return Tree('verb phrase', L, {'head': vb.info['head']})
 
-def oracaoSemSujeito(tense=None, OD=None, OI=None):
-    if tense is None:
-        tense = utils.aleatory('t')
+###########
 
-    if utils.percent(100):
-        # 3a. pessoa do plural: fizeram, tentarão, etc.
-        sv = sintagmaVerbal('3', 'm', 'p', tense, None,
-                            'PESSOA', OD, OI)
-        L = [sv]
+@utils.dump_args
+@utils.randomize('person', 'gender', 'number', 'tense')
+def simpleClause(person=None, gender=None, number=None, tense=None,
+                 tran=None, S=None, OD=None, OI=None):
 
-    if OI is not None:
-        prep = sv.info['nucleo'].info['entity'].prep
-    else:
-        prep = None
+    vp = verbPhrase(person, gender, number, tense, tran, S, OD, OI)
+    obj_head = vp.info['head'].info['entity']
+    np = nounPhrase(person, gender, number, 'S',
+                    S=obj_head.concept['base'])
 
-    return Tree('oracao', L, {'prep': prep})
+    prep = None
 
-def oracao(person=None, gender=None, number=None, tense=None):
-    if utils.percent(20):
-        return oracaoSemSujeito()
-    return oracaoSimples(person, gender, number, tense)
+    if OI:
+        prep = obj_head.prep
+
+    return Tree('simple clause', [np, vp], {'prep': prep})
+
+###########
 
 if __name__ == '__main__':
     for i in range(20):
-        print oracao()
+        s = simpleClause()
+        print s

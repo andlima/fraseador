@@ -48,7 +48,7 @@ def getNominal(category, gender, number, S=None):
     lista = filter(
         lambda x: _word(category, x.index).validate(gender, number),
         semantics.table[category])
-    if category == 'adjective':
+    if category in ('adjective'):
         lista = filter(lambda x: x.includes(S), lista)
     else:
         lista = filter(lambda x: x.belongs(S), lista)
@@ -62,6 +62,8 @@ def getNominal(category, gender, number, S=None):
 
 def getPreposition(prep, gender, number, next=None):
     category = 'preposition'
+    if prep is None:
+        prep = random.choice(vocabulary.data[category].keys())
     return Word(_word(category, prep), category,
                      {'gender': gender, 'number': number,
                       'next': next})
@@ -87,15 +89,22 @@ def getPossessivePronoun(gender, number, idp, idn):
     return Word(_word(category, word.index), category,
                 {'gender': gender, 'number': number})
 
-def getRelativePronoun(gender, number):
+def getRelativePronoun(gender, number, S=None):
     category = 'relative_pronoun'
-    lista = filter(lambda x: x.validate(gender, number),
-                   vocabulary.data[category].values())
+    lista = filter(
+        lambda x: _word(category, x.index).validate(gender, number),
+        semantics.table[category])
+    if S == None:
+        lista = filter(lambda x: not x.belongs('PESSOA'), lista)
+    else:
+        lista = filter(lambda x: x.belongs('PESSOA'), lista)
     if not lista:
-        raise 'Erro:', (category, gender, number)
+        raise 'Error: no semantic compatibility:', (
+            category, gender, number, S)
     word = random.choice(lista)
     return Word(_word(category, word.index), category,
-                {'gender': gender, 'number': number})
+                     {'gender': gender, 'number': number,
+                      'entity': word})
 
 def getAdjectivePronoun(gender, number, use):
     category = 'adjective_pronoun'

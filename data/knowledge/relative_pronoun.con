@@ -1,8 +1,2 @@
-*:S,OD:que
-*:S,OD:qual:+artigo/o
-!PESSOA:OI:que
-!PESSOA:OI:qual:+artigo/o
-PESSOA:OI:quem:restritivo:preposicao/!sem
-PESSOA:qual:restritivo:+artigo/o,preposicao/sem
-LUGAR:ADJADV:onde:restritivo
-*:ADJADN:cujo
+PESSOA:quem
+COISA:que

@@ -67,7 +67,8 @@ class Tree:
             words = self.asList()
             for i, word in enumerate(words[:-1]):
                 if word.info.get('next', None):
-                    words[i+1].info['hide'] = True
+                    if word.value.contracts(word.info['next']):
+                        words[i+1].info['hide'] = True
 
             words = [i for i in words \
                          if not i.info.get('hide', False)]

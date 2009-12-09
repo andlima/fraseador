@@ -14,9 +14,9 @@ class Concept:
 def fromLine(elem):
     '''Obtains a concept from a line.'''
 
-    data = elem.split(':') 
+    data = elem.split(',') 
     index = data[0]
     parents = None
     if len(data) == 2:
-        parents = data[1].split(',')
+        parents = data[1].split('/')
     return Concept(index, parents)

@@ -7,6 +7,7 @@ import utils
 
 import grammar
 from grammar.word import Word
+
 from vocabulary import Vocabulary
 
 import semantics
@@ -25,7 +26,8 @@ def _word(category, index):
 
 def getVerb(person, number, tense, tran=None,
              S=None, OD=None, OI=None):
-    lista = semantics.table['verb']
+    category = 'verb'
+    lista = semantics.table[category]
     if S is not None:
         lista = filter(lambda x: x.includes(S), lista)
     if tran in ('vtd', 'vtdi') and OD is not None:
@@ -36,9 +38,9 @@ def getVerb(person, number, tense, tran=None,
         lista = filter(lambda x: x.transitivity == tran, lista)
     if not lista:
         raise 'Error: no semantic compatibility:', (
-            'verb', person, number, tense, tran, S, OD, OI)
+            category, person, number, tense, tran, S, OD, OI)
     word = random.choice(lista)
-    return Word(_word('verb', word.index), 'verb',
+    return Word(_word(category, word.index), category,
                      {'person': person, 'number': number,
                       'tense': tense, 'entity': word})
 
@@ -94,7 +96,7 @@ def getRelativePronoun(gender, number, S=None):
     lista = filter(
         lambda x: _word(category, x.index).validate(gender, number),
         semantics.table[category])
-    if S == None:
+    if S is None:
         lista = filter(lambda x: not x.belongs('PESSOA'), lista)
     else:
         lista = filter(lambda x: x.belongs('PESSOA'), lista)

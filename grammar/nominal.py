@@ -40,10 +40,10 @@ class Nominal:
 def fromLine(line, rules):
     '''Obtains a new Nominal instance from a line.'''
 
-    data = line.split(':')
-    index = data[2].split(',')[0]
+    data = line.split(',')
+    index = data[2].split('/')[0]
     rule = rules[data[0]]
-    tmp = data[1].split(',')
+    tmp = data[1].split('/')
     gender = tmp[0]
     number = tmp[1]
     content = data[2]

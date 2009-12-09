@@ -35,10 +35,10 @@ class Contraction:
 def fromLine(line, rules):
     '''Obtains a new Nominal instance from a line.'''
 
-    data = line.split(':')
+    data = line.split(',')
     rule = rules[data[0]]
     category = data[1]
-    (prep, next) = data[2].split(',')
+    (prep, next) = data[2].split('+')
     index = (prep, next, category)
     content = data[3]
     return Contraction(index, rule, category, prep, next,

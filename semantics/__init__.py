@@ -7,7 +7,7 @@ table = {}
 def initKnowledge(pwd='./data/knowledge'):
     '''Initialize the concepts' knowledge.'''
 
-    f = file(pwd+'/concept.lst', 'r')
+    f = file(pwd+'/concept.csv', 'r')
     for elem in map(lambda(s): s[:-1], f.readlines()):
         if elem != '' and elem[0] != '#':
             x = concept.fromLine(elem)
@@ -22,7 +22,7 @@ def initCategory(category, pwd='./data/knowledge'):
     
     table[category] = []
 
-    f = file(pwd+'/'+category+'.con', 'r')
+    f = file(pwd+'/'+category+'.csv', 'r')
     for elem in map(lambda(s): s[:-1], f.readlines()):
         if elem != '' and elem[0] != '#':
             table[category].append(entity.fromLine(category, elem))

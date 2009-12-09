@@ -22,5 +22,5 @@ class Verbal:
 def fromLine(line, rules):
     '''Obtains a new Verbal instance from a line.'''
 
-    rule, index = line.split(':')
+    rule, index = line.split(',')
     return Verbal(index, rules[rule])

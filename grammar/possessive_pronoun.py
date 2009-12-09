@@ -37,7 +37,7 @@ def fromLine(line, rules):
     '''Obtains a new PersonalPronoun instance from a line.'''
 
     n = nominal.fromLine(line, rules)
-    tmp = line.split(':')[1].split(',')
+    tmp = line.split(',')[1].split('/')
     ant_person = tmp[2]
     ant_number = tmp[3]
     return PossessivePronoun(n.index, n.rule, n.gender, n.number,

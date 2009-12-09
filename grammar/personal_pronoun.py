@@ -37,7 +37,7 @@ def fromLine(line, rules):
     '''Obtains a new PersonalPronoun instance from a line.'''
 
     n = nominal.fromLine(line, rules)
-    tmp = line.split(':')[1].split(',')
+    tmp = line.split(',')[1].split('/')
     person = tmp[2]
     functions = tmp[3].split('|')
     tonic = tmp[4]

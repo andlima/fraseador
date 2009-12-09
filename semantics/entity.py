@@ -56,7 +56,7 @@ class Entity:
 def fromLine(category, line):
     '''Obtains an entity from a line.'''
 
-    data = line.split(':')
+    data = line.split(',')
 
     index = data[1]
     concept = {}
@@ -66,8 +66,8 @@ def fromLine(category, line):
         tmp = data[2].split('@')
         concept['use'] = tmp[0]
         if len(tmp) == 2:
-            gender = tmp[1].split(',')[0]
-            number = tmp[1].split(',')[1]
+            gender = tmp[1].split('/')[0]
+            number = tmp[1].split('/')[1]
         else:
             gender = '*'
             number = '*'
@@ -85,14 +85,14 @@ def fromLine(category, line):
             concept['OD'] = data[3]
         elif transitivity == 'vti':
             # 3: preposition / indirect object
-            prep = data[3].split('/')[0]
-            concept['OI'] = data[3].split('/')[1]
+            prep = data[3].split('+')[0]
+            concept['OI'] = data[3].split('+')[1]
         elif transitivity == 'vtdi':
             # 3: direct object
             # 4: preposition / indirect object
             concept['OD'] = data[3]
-            prep = data[4].split('/')[0]
-            concept['OI'] = data[4].split('/')[1]
+            prep = data[4].split('+')[0]
+            concept['OI'] = data[4].split('+')[1]
         return Entity(index, category, concept, prep=prep,
                       transitivity=transitivity)
 

@@ -3,7 +3,7 @@
 def init(rule_dict, pwd='./data/rules'):
     '''Initialize rules from file.'''
 
-    f = file(pwd+'/rules.rule', 'r')
+    f = file(pwd+'/rule_list.csv', 'r')
     for elem in map(lambda(s): s[:-1], f.readlines()):
         if elem != '' and elem[0] != '#':
             rule_dict[elem] = Rule(elem)
@@ -11,10 +11,10 @@ def init(rule_dict, pwd='./data/rules'):
 
     rules_list = ['nominal', 'verbal']
     for rule_name in rules_list:
-        f = file(pwd+'/'+rule_name+'.rule', 'r')
+        f = file(pwd+'/'+rule_name+'.csv', 'r')
         for elem in map(lambda(s): s[:-1], f.readlines()):
             if elem != '' and elem[0] != '#':
-                tmp = elem.split(':')
+                tmp = elem.split(',')
                 rule_dict[tmp[0]].insert(tmp[1], tmp[2])
         f.close()
 
@@ -40,13 +40,13 @@ class Rule:
             self.kind = 'verbal'
             for i in range(6):
                 self.subs[(par, i)] = subs.split('/')[0] + '/' + \
-                        subs[1:].split('/')[1].split(',')[i]
-        elif subs[0] == '#':
+                        subs[1:].split('/')[1].split(':')[i]
+        elif subs[0] == '%':
             self.kind = 'nominal1'
-            self.subs[tuple(par.split(','))] = subs[1:]
+            self.subs[tuple(par.split('/'))] = subs[1:]
         else:
             self.kind = 'nominal2'
-            self.subs[tuple(par.split(','))] = subs.split(',')
+            self.subs[tuple(par.split('/'))] = subs.split('/')
 
     def apply(self, txt, par, pn=''):
         aux = txt
@@ -55,7 +55,7 @@ class Rule:
                 if not filter(lambda x: x, \
                                 map(lambda y: k[y] != par[y] and \
                                       k[y] != '*', range(len(k)))):
-                    return txt.split(',')[int(self.subs[k])-1]
+                    return txt.split('/')[int(self.subs[k])-1]
             return txt
         elif self.kind == 'nominal2':
             for k in self.subs:
@@ -63,7 +63,7 @@ class Rule:
                                 map(lambda y: k[y] != par[y] and \
                                       k[y] != '*', range(len(k)))):
                     for j in self.subs[k]:
-                        sub = j.split('/')
+                        sub = j.split(':')
                         if sub[0][-1] == '$':
                             aux = (aux + '$').replace(sub[0],
                                                         sub[1])

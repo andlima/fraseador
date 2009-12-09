@@ -31,7 +31,7 @@ CONCEPTUAL_LIST = NOMINAL_CLASS_LIST + ['verb']
 TENSE_DICT = {'pi': 'present', 'ppi': 'past', 'fpi': 'future'}
 
 def init(extra, dic, rules, pwd='./dicionario'):
-    f = file(pwd+'/'+extra+'.lst', 'r')
+    f = file(pwd+'/'+extra+'.csv', 'r')
     for elem in map(lambda s: s[:-1], f.readlines()):
         if elem != '' and elem[0] != '#':
             if extra in NOMINAL_CLASS_LIST:

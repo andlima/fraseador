@@ -5,7 +5,7 @@ import utils
 def init(rule_dict, pwd='./data/rules'):
     '''Initialize rules from file.'''
 
-    for elem in utils.runFile(pwd+'/rule_list.csv'):
+    for elem in utils.runFile(pwd+'/rules_list.csv'):
         rule_dict[elem] = Rule(elem)
 
     rules_list = ['nominal', 'verbal']

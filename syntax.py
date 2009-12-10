@@ -235,6 +235,9 @@ def simpleClause(person=None, gender=None, number=None, tense=None,
 ###########
 
 if __name__ == '__main__':
-    for i in range(20):
-        s = simpleClause()
-        print s
+    n = 20
+    lf = '\n'
+    phrase_list = []
+    for i in range(n):
+        phrase_list.append(simpleClause().__repr__().capitalize() + '.')
+    print lf.join(phrase_list)

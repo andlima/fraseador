@@ -1,22 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import utils
+
 def init(rule_dict, pwd='./data/rules'):
     '''Initialize rules from file.'''
 
-    f = file(pwd+'/rule_list.csv', 'r')
-    for elem in map(lambda(s): s[:-1], f.readlines()):
-        if elem != '' and elem[0] != '#':
-            rule_dict[elem] = Rule(elem)
-    f.close()
+    for elem in utils.runFile(pwd+'/rule_list.csv'):
+        rule_dict[elem] = Rule(elem)
 
     rules_list = ['nominal', 'verbal']
     for rule_name in rules_list:
-        f = file(pwd+'/'+rule_name+'.csv', 'r')
-        for elem in map(lambda(s): s[:-1], f.readlines()):
-            if elem != '' and elem[0] != '#':
-                tmp = elem.split(',')
-                rule_dict[tmp[0]].insert(tmp[1], tmp[2])
-        f.close()
+        for elem in utils.runFile(pwd+'/'+rule_name+'.csv'):
+            name, par, subs = elem.split(',')
+            rule_dict[name].insert(par, subs)
 
 class Rule:
     '''

@@ -7,9 +7,12 @@ import grammar
 debug = False
 
 def percent(n):
-    return (random.randrange(100)<n)
+    '''Returns true for n percent of the calls.'''
+    return (random.randrange(100) < n)
 
 def aleatory(s):
+    '''Return a random person/gender/number/tense element.'''
+
     if s == 'person':
         return random.choice('12333333')
     if s == 'gender':
@@ -20,13 +23,10 @@ def aleatory(s):
         return random.choice(grammar.TENSES)
     raise "aleatory('" + s + "') invalid"
 
-_depth = 0
 
+_depth = 0
 def dump_args(func):
-    '''
-    This decorator dumps out the arguments passed to a function before
-    calling it.
-    '''
+    '''A decorator for dumping a function's arguments.'''
 
     if not debug:
         return func
@@ -49,6 +49,8 @@ def dump_args(func):
 ################
 
 def randomize(*arg_list):
+    '''A decorator for randomizing arguments provided as None.'''
+
     def randomize(func):
         argnames = func.func_code.co_varnames[:func.func_code.co_argcount]
         def other_func(*args, **kwargs):
@@ -61,3 +63,16 @@ def randomize(*arg_list):
             return func(**tmp)
         return other_func
     return randomize
+
+################
+
+def runFile(filepath):
+    '''A function for iterating over the data files.'''
+
+    f = file(filepath, 'r')
+    for elem in f:
+        elem = elem[:-1]
+        if elem != '' and elem[0] != '#':
+            yield elem
+    f.close()
+

@@ -1,18 +1,16 @@
+import utils
 import concept
 import entity
 
 knowledge = {}
 table = {}
 
-def initKnowledge(pwd='./data/knowledge'):
+def initKnowledge(pwd):
     '''Initialize the concepts' knowledge.'''
 
-    f = file(pwd+'/concept.csv', 'r')
-    for elem in map(lambda(s): s[:-1], f.readlines()):
-        if elem != '' and elem[0] != '#':
-            x = concept.fromLine(elem)
+    for elem in utils.runFile(pwd+'/concept.csv'):
+        x = concept.fromLine(elem)
         knowledge[x.index] = x
-    f.close()
 
 def initCategory(category, pwd='./data/knowledge'):
     '''
@@ -22,11 +20,8 @@ def initCategory(category, pwd='./data/knowledge'):
     
     table[category] = []
 
-    f = file(pwd+'/'+category+'.csv', 'r')
-    for elem in map(lambda(s): s[:-1], f.readlines()):
-        if elem != '' and elem[0] != '#':
-            table[category].append(entity.fromLine(category, elem))
-    f.close()
+    for elem in utils.runFile(pwd+'/'+category+'.csv'):
+        table[category].append(entity.fromLine(category, elem))
 
 def _transitiveClosure(x):
     # Obtains, recursively, all the ancestors of a given concept.

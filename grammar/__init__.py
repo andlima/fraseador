@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-
+import utils
 import nominal
 import verbal
 import preposition
@@ -30,23 +29,20 @@ CONCEPTUAL_LIST = NOMINAL_CLASS_LIST + ['verb']
 
 TENSE_DICT = {'pi': 'present', 'ppi': 'past', 'fpi': 'future'}
 
-def init(extra, dic, rules, pwd='./dicionario'):
-    f = file(pwd+'/'+extra+'.csv', 'r')
-    for elem in map(lambda s: s[:-1], f.readlines()):
-        if elem != '' and elem[0] != '#':
-            if extra in NOMINAL_CLASS_LIST:
-                tmp = nominal.fromLine(elem, rules)
-            elif extra == 'verb':
-                tmp = verbal.fromLine(elem, rules)
-            elif extra == 'preposition':
-                tmp = preposition.fromLine(elem)
-            elif extra == 'personal_pronoun':
-                tmp = personal_pronoun.fromLine(elem, rules)
-            elif extra == 'possessive_pronoun':
-                tmp = possessive_pronoun.fromLine(elem, rules)
-            elif extra == 'contraction':
-                tmp = contraction.fromLine(elem, rules)
-            else:
-                raise 'Unknown class: ' + extra
-            dic[tmp.index] = tmp
-    f.close()
+def init(extra, dic, rules, pwd):
+    for elem in utils.runFile(pwd+'/'+extra+'.csv'):
+        if extra in NOMINAL_CLASS_LIST:
+            tmp = nominal.fromLine(elem, rules)
+        elif extra == 'verb':
+            tmp = verbal.fromLine(elem, rules)
+        elif extra == 'preposition':
+            tmp = preposition.fromLine(elem)
+        elif extra == 'personal_pronoun':
+            tmp = personal_pronoun.fromLine(elem, rules)
+        elif extra == 'possessive_pronoun':
+            tmp = possessive_pronoun.fromLine(elem, rules)
+        elif extra == 'contraction':
+            tmp = contraction.fromLine(elem, rules)
+        else:
+            raise 'Unknown class: ' + extra
+        dic[tmp.index] = tmp

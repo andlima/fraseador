@@ -34,36 +34,44 @@ def determiner(person=None, gender=None, number=None, function='S',
     return Tree('determiner', [det], {'next': next})
 
 @utils.dump_args
-def adnominalAdjunct(person=None, gender=None, number=None, function='S',
-                     kind=None, S=None, position='pos'):
+def adnominalAdjunct(person=None, gender=None, number=None,
+                     function='S', kind=None, S=None,
+                     position='pos'):
     L = []
 
     if kind == 'noun':
         if utils.percent(20):
-            # menino feio
-            # bola feia
-            adjective = word_factory.getNominal('adjective', gender, number, S)
-            L.append(adjective)
-        elif utils.percent(20):
-            # menino que correu
-            # bola que caiu
-            L = [word_factory.getRelativePronoun(gender, number, None),
-                 verbPhrase(person, gender, number, S=S)]
-        elif utils.percent(20):
-            # menino que a mãe ama
-            # bola que o menino chutou
-            L = [word_factory.getRelativePronoun(gender, number, None),
-                 simpleClause(tran='vtd', OD=S)]
-        else:
-            # menino de quem a mãe gosta
-            # bola da qual o menino gosta
-            that_clause = simpleClause(tran='vti', OI=S)
-            prep = word_factory.getPreposition(that_clause.info['prep'],
-                                               gender, number, None)
-            L = [prep,
-                 word_factory.getRelativePronoun(gender, number, S),
-                 that_clause]
-
+            if utils.percent(50):
+                # menino feio
+                # bola feia
+                adjective = word_factory.getNominal(
+                    'adjective', gender, number, S)
+                L.append(adjective)
+            else:
+                if utils.percent(40):
+                    # menino que correu
+                    # bola que caiu
+                    L = [word_factory.getRelativePronoun(
+                            gender, number, None),
+                         verbPhrase(person, gender, number, S=S)]
+                elif utils.percent(50):
+                    # menino que a mãe ama
+                    # bola que o menino chutou
+                    L = [word_factory.getRelativePronoun(
+                            gender, number, None),
+                         simpleClause(tran='vtd', OD=S)]
+                else:
+                    # menino de quem a mãe gosta
+                    # bola da qual o menino gosta
+                    that_clause = simpleClause(tran='vti', OI=S)
+                    prep = word_factory.getPreposition(
+                        that_clause.info['prep'], gender,
+                        number, None)
+                    L = [prep,
+                         word_factory.getRelativePronoun(
+                            gender,number, S),
+                         that_clause]
+                
     elif kind == 'personal_pronoun' and function == 'S':
         if utils.percent(20):
             # eu que corri

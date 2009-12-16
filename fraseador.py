@@ -15,7 +15,7 @@ import syntax
 def phrases(n=20, lf=' '):
     phrase_list = []
     for i in range(n):
-        phrase_list.append(syntax.simpleClause().__repr__().capitalize() + '.')
+        phrase_list.append(syntax.clause().__repr__().capitalize() + '.')
     return lf.join(phrase_list)
 
 class MainPage(webapp.RequestHandler):

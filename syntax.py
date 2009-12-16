@@ -59,11 +59,11 @@ def adnominalAdjunct(person=None, gender=None, number=None,
                     # bola que o menino chutou
                     L = [word_factory.getRelativePronoun(
                             gender, number, None),
-                         simpleClause(tran='vtd', OD=S)]
+                         clause(tran='vtd', OD=S)]
                 else:
                     # menino de quem a mãe gosta
                     # bola da qual o menino gosta
-                    that_clause = simpleClause(tran='vti', OI=S)
+                    that_clause = clause(tran='vti', OI=S)
                     prep = word_factory.getPreposition(
                         that_clause.info['prep'], gender,
                         number, None)
@@ -225,8 +225,8 @@ def verbPhrase(person=None, gender=None, number=None, tense=None,
 
 @utils.dump_args
 @utils.randomize('person', 'gender', 'number', 'tense')
-def simpleClause(person=None, gender=None, number=None, tense=None,
-                 tran=None, S=None, OD=None, OI=None):
+def clause(person=None, gender=None, number=None, tense=None,
+           tran=None, S=None, OD=None, OI=None):
 
     vp = verbPhrase(person, gender, number, tense, tran, S, OD, OI)
     obj_head = vp.info['head'].info['entity']
@@ -238,7 +238,7 @@ def simpleClause(person=None, gender=None, number=None, tense=None,
     if OI:
         prep = obj_head.prep
 
-    return Tree('simple clause', [np, vp], {'prep': prep})
+    return Tree('clause', [np, vp], {'prep': prep})
 
 ###########
 
@@ -247,5 +247,5 @@ if __name__ == '__main__':
     lf = '\n'
     phrase_list = []
     for i in range(n):
-        phrase_list.append(simpleClause().__repr__().capitalize() + '.')
+        phrase_list.append(clause().__repr__().capitalize() + '.')
     print lf.join(phrase_list)

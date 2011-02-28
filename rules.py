@@ -16,7 +16,7 @@ def init(rule_dict, pwd='./data/rules'):
 
 class Rule:
     '''
-    Defines how to declinate/conjugate words based on roots/lists.
+    Defines how to decline/conjugate words based on roots/lists.
     '''
 
     def __init__(self, name):

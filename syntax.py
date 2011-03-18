@@ -3,58 +3,55 @@
 
 import random
 
-import utils
+from utils import dump_args, percent, aleatory, randomize
 
 import grammar
 import semantics
 import semantics.concept
 import word_factory
 
-import tree
 from tree import Tree
 
-#utils.debug = True
 
-##########
-
-@utils.dump_args
+@dump_args
 def determiner(person=None, gender=None, number=None, function='S',
                kind=None, S=None):
-    if utils.percent(35):
+    if percent(35):
         det = word_factory.getNominal('article', gender, number)
         next = (det.value.index, 'article')
-    elif utils.percent(50):
+    elif percent(50):
         det = word_factory.getAdjectivePronoun(
             gender, number, 'determiner')
         next = (det.value.index, 'adjective_pronoun')
     else:
         det = word_factory.getPossessivePronoun(
-            gender, number, utils.aleatory('person'), utils.aleatory('number'))
+            gender, number, aleatory('person'), aleatory('number'))
         next = (det.value.index, 'possessive_pronoun')
     return Tree('determiner', [det], {'next': next})
 
-@utils.dump_args
+
+@dump_args
 def adnominalAdjunct(person=None, gender=None, number=None,
                      function='S', kind=None, S=None,
                      position='pos'):
     L = []
 
     if kind == 'noun':
-        if utils.percent(20):
-            if utils.percent(50):
+        if percent(20):
+            if percent(50):
                 # menino feio
                 # bola feia
                 adjective = word_factory.getNominal(
                     'adjective', gender, number, S)
                 L.append(adjective)
             else:
-                if utils.percent(40):
+                if percent(40):
                     # menino que correu
                     # bola que caiu
                     L = [word_factory.getRelativePronoun(
                             gender, number, None),
                          verbPhrase(person, gender, number, S=S)]
-                elif utils.percent(50):
+                elif percent(50):
                     # menino que a mãe ama
                     # bola que o menino chutou
                     L = [word_factory.getRelativePronoun(
@@ -73,7 +70,7 @@ def adnominalAdjunct(person=None, gender=None, number=None,
                          that_clause]
                 
     elif kind == 'personal_pronoun' and function == 'S':
-        if utils.percent(20):
+        if percent(20):
             # eu que corri
             L = [word_factory.getRelativePronoun(gender, number, None),
                  verbPhrase(person, gender, number, S=S)]
@@ -83,10 +80,9 @@ def adnominalAdjunct(person=None, gender=None, number=None,
     else:
         return None
 
-###########
 
-@utils.dump_args
-@utils.randomize('gender', 'number')
+@dump_args
+@randomize('gender', 'number')
 def noun(person=None, gender=None, number=None, function='S',
          kind=None, S=None):
 
@@ -104,13 +100,14 @@ def noun(person=None, gender=None, number=None, function='S',
         raise 'Invalid kind for noun phrase', kind
     return Tree('noun', [head], {'head': head, 'next': next})
 
-@utils.dump_args
-@utils.randomize('gender', 'number')
+
+@dump_args
+@randomize('gender', 'number')
 def nounBar(person=None, gender=None, number=None, function='S',
             kind=None, S=None):
     n = noun(person, gender, number, function, kind, S)
     a = None
-    if utils.percent(50):
+    if percent(50):
         a = adnominalAdjunct(person, gender, number, function, kind, S)
     if a:
         L = [n, a]
@@ -118,17 +115,18 @@ def nounBar(person=None, gender=None, number=None, function='S',
         L = [n]
     return Tree('noun-bar', L, {'head': n.info['head'], 'next': n.info['next']})
 
-@utils.dump_args
-@utils.randomize('gender', 'number')
+
+@dump_args
+@randomize('gender', 'number')
 def nounPhrase(person=None, gender=None, number=None, function='S',
                kind=None, S=None):
 
     if person is None:
         if S and semantics.verifySemantics(S, 'PESSOA'):
-            person = utils.aleatory('person')
+            person = aleatory('person')
         else: person = '3'
     if kind is None:
-        if person != '3' or utils.percent(15):
+        if person != '3' or percent(15):
             kind = 'personal_pronoun'
         else:
             kind = 'noun'
@@ -147,20 +145,19 @@ def nounPhrase(person=None, gender=None, number=None, function='S',
     L.append(n)
     return Tree('noun phrase', L, {'head': n.info['head'], 'next': next})
 
-###########
 
-@utils.dump_args
-@utils.randomize('gender', 'number')
+@dump_args
+@randomize('gender', 'number')
 def prepositionalPhrase(prep=None, person=None, gender=None,
                         number=None, function='S', kind=None, S=None):
 
     if person is None:
         if S and semantics.verifySemantics(S, 'PESSOA'):
-            person = utils.aleatory('person')
+            person = aleatory('person')
         else:
             person = '3'
     if kind is None:
-        if person != '3' or utils.percent(15):
+        if person != '3' or percent(15):
             kind = 'personal_pronoun'
         else:
             kind = 'noun'
@@ -175,10 +172,9 @@ def prepositionalPhrase(prep=None, person=None, gender=None,
 
     return Tree('prepositional phrase', L, {'head': np.info['head']})
 
-###########
 
-@utils.dump_args
-@utils.randomize('person', 'gender', 'number', 'tense')
+@dump_args
+@randomize('person', 'gender', 'number', 'tense')
 def verb(person=None, gender=None, number=None, tense=None,
          tran=None, S=None, OD=None, OI=None):
 
@@ -205,15 +201,17 @@ def verb(person=None, gender=None, number=None, tense=None,
 
     return Tree('verb', L, {'head': head})
 
-@utils.dump_args
-@utils.randomize('person', 'gender', 'number', 'tense')
+
+@dump_args
+@randomize('person', 'gender', 'number', 'tense')
 def verbBar(person=None, gender=None, number=None, tense=None,
             tran=None, S=None, OD=None, OI=None):
     v = verb(person, gender, number, tense, tran, S, OD, OI)
     return Tree('verb-bar', [v], {'head': v.info['head']})
 
-@utils.dump_args
-@utils.randomize('person', 'gender', 'number', 'tense')
+
+@dump_args
+@randomize('person', 'gender', 'number', 'tense')
 def verbPhrase(person=None, gender=None, number=None, tense=None,
                    tran=None, S=None, OD=None, OI=None):
     vb = verbBar(person, gender, number, tense, tran, S, OD, OI)
@@ -221,10 +219,9 @@ def verbPhrase(person=None, gender=None, number=None, tense=None,
 
     return Tree('verb phrase', L, {'head': vb.info['head']})
 
-###########
 
-@utils.dump_args
-@utils.randomize('person', 'gender', 'number', 'tense')
+@dump_args
+@randomize('person', 'gender', 'number', 'tense')
 def clause(person=None, gender=None, number=None, tense=None,
            tran=None, S=None, OD=None, OI=None):
 
@@ -240,7 +237,6 @@ def clause(person=None, gender=None, number=None, tense=None,
 
     return Tree('clause', [np, vp], {'prep': prep})
 
-###########
 
 if __name__ == '__main__':
     n = 20

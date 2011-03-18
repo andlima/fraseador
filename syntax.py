@@ -224,11 +224,7 @@ def clause(person=None, gender=None, number=None, tense=None,
     vp = verbPhrase(person, gender, number, tense, tran, S, OD, OI)
     obj_head = vp.info['head'].info['entity']
     np = nounPhrase(person, gender, number, 'S', S=obj_head.concept['base'])
-
-    if OI:
-        prep = obj_head.prep
-    else:
-        prep = None
+    prep = obj_head.prep if OI else None
 
     return Tree('clause', [np, vp], {'prep': prep})
 

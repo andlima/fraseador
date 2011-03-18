@@ -13,7 +13,7 @@ import semantics.concept
 import word_factory
 
 from tree import Tree
-
+#Tree.debug = True
 
 @dump_args
 def determiner(person=None, gender=None, number=None, function='S',

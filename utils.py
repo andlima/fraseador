@@ -4,11 +4,14 @@ import random
 
 import grammar
 
-DEBUG = False
-
-def use_debug(x):
-    global DEBUG
-    DEBUG = x
+__debug = False
+def use_debug(ud):
+    '''
+    Defines whether or not to use debug. When debugging, will dump
+    args for functions decorated with dump_args.
+    '''
+    global __debug
+    __debug = ud
 
 def percent(n):
     '''Returns true for n percent of the calls.'''
@@ -32,7 +35,7 @@ _depth = 0
 def dump_args(func):
     '''A decorator for dumping a function's arguments.'''
 
-    if not DEBUG:
+    if not __debug:
         return func
 
     argnames = func.func_code.co_varnames[:func.func_code.co_argcount]

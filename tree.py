@@ -1,7 +1,14 @@
-debug = False
-
 class Tree:
-    '''Defines an auxiliary tree type.'''
+    '''
+    Defines an auxiliary tree type.
+
+    Class attribute `debug` defines whether `__repr__` should return
+    the a string which represents the tree structure rather than the
+    default, which is a simple string of a linearized version of the
+    tree.
+    '''
+
+    debug = False
 
     def __init__(self, value, children=None, info=None):
         ''' 
@@ -54,7 +61,7 @@ class Tree:
         representation.
         '''
 
-        if debug:
+        if Tree.debug:
             if self.children:
                 phrase = '("' + str(self.value) + '" ' + ' '.join(
                     map(lambda z: z.__repr__(), self.children)) + ')'

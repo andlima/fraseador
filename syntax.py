@@ -4,6 +4,8 @@
 import random
 
 from utils import dump_args, percent, aleatory, randomize
+from utils import use_debug as utils_use_debug
+#utils_use_debug(True)
 
 import grammar
 import semantics

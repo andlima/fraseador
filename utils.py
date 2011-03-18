@@ -4,7 +4,11 @@ import random
 
 import grammar
 
-debug = False
+DEBUG = False
+
+def use_debug(x):
+    global DEBUG
+    DEBUG = x
 
 def percent(n):
     '''Returns true for n percent of the calls.'''
@@ -28,7 +32,7 @@ _depth = 0
 def dump_args(func):
     '''A decorator for dumping a function's arguments.'''
 
-    if not debug:
+    if not DEBUG:
         return func
 
     argnames = func.func_code.co_varnames[:func.func_code.co_argcount]

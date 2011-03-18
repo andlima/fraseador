@@ -46,8 +46,6 @@ def dump_args(func):
         return x
     return echo_func
 
-################
-
 def randomize(*arg_list):
     '''A decorator for randomizing arguments provided as None.'''
 
@@ -63,8 +61,6 @@ def randomize(*arg_list):
             return func(**tmp)
         return other_func
     return randomize
-
-################
 
 def runFile(filepath):
     '''A function for iterating over the data files.'''

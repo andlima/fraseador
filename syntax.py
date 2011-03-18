@@ -7,9 +7,8 @@ from utils import dump_args, percent, aleatory, randomize
 from utils import use_debug as utils_use_debug
 #utils_use_debug(True)
 
-import grammar
 from semantics import verifySemantics
-import word_factory
+import word_factory as wf
 
 from tree import Tree
 #Tree.debug = True
@@ -18,23 +17,21 @@ from tree import Tree
 def determiner(person=None, gender=None, number=None, function='S',
                kind=None, S=None):
     if percent(35):
-        det = word_factory.getNominal('article', gender, number)
+        det = wf.getNominal('article', gender, number)
         next = (det.value.index, 'article')
     elif percent(50):
-        det = word_factory.getAdjectivePronoun(
-            gender, number, 'determiner')
+        det = wf.getAdjectivePronoun(gender, number, 'determiner')
         next = (det.value.index, 'adjective_pronoun')
     else:
-        det = word_factory.getPossessivePronoun(
+        det = wf.getPossessivePronoun(
             gender, number, aleatory('person'), aleatory('number'))
         next = (det.value.index, 'possessive_pronoun')
     return Tree('determiner', [det], {'next': next})
 
 
 @dump_args
-def adnominalAdjunct(person=None, gender=None, number=None,
-                     function='S', kind=None, S=None,
-                     position='pos'):
+def adnominalAdjunct(person=None, gender=None, number=None, function='S',
+                     kind=None, S=None, position='pos'):
     L = []
 
     if kind == 'noun':
@@ -42,38 +39,35 @@ def adnominalAdjunct(person=None, gender=None, number=None,
             if percent(50):
                 # menino feio
                 # bola feia
-                adjective = word_factory.getNominal(
-                    'adjective', gender, number, S)
+                adjective = wf.getNominal('adjective', gender, number, S)
                 L.append(adjective)
             else:
                 if percent(40):
                     # menino que correu
                     # bola que caiu
-                    L = [word_factory.getRelativePronoun(
-                            gender, number, None),
+                    L = [wf.getRelativePronoun(gender, number, None),
                          verbPhrase(person, gender, number, S=S)]
                 elif percent(50):
                     # menino que a mãe ama
                     # bola que o menino chutou
-                    L = [word_factory.getRelativePronoun(
-                            gender, number, None),
+                    L = [wf.getRelativePronoun(gender, number, None),
                          clause(tran='vtd', OD=S)]
                 else:
                     # menino de quem a mãe gosta
                     # bola da qual o menino gosta
                     that_clause = clause(tran='vti', OI=S)
-                    prep = word_factory.getPreposition(
+                    prep = wf.getPreposition(
                         that_clause.info['prep'], gender,
                         number, None)
                     L = [prep,
-                         word_factory.getRelativePronoun(
-                            gender,number, S),
+                         wf.getRelativePronoun(
+                            gender, number, S),
                          that_clause]
                 
     elif kind == 'personal_pronoun' and function == 'S':
         if percent(20):
             # eu que corri
-            L = [word_factory.getRelativePronoun(gender, number, None),
+            L = [wf.getRelativePronoun(gender, number, None),
                  verbPhrase(person, gender, number, S=S)]
         
     if L:
@@ -90,11 +84,11 @@ def noun(person=None, gender=None, number=None, function='S',
     if kind == 'noun':
         if person != '3':
             raise 'Noun phrase for NOUN kind must be on the 3rd person'
-        head = word_factory.getNominal('noun', gender, number, S)
+        head = wf.getNominal('noun', gender, number, S)
         next = (head.value.index, 'noun')
     elif kind == 'personal_pronoun':
         tonic = 'a' if function == 'OD' else 't'
-        head = word_factory.getPersonalPronoun(
+        head = wf.getPersonalPronoun(
             person, number, gender, function, tonic)
         next = (head.value.index, 'personal_pronoun')
     else:
@@ -106,15 +100,16 @@ def noun(person=None, gender=None, number=None, function='S',
 @randomize('gender', 'number')
 def nounBar(person=None, gender=None, number=None, function='S',
             kind=None, S=None):
-    n = noun(person, gender, number, function, kind, S)
-    a = None
+    noun_ = noun(person, gender, number, function, kind, S)
+    adn_adj = None
     if percent(50):
-        a = adnominalAdjunct(person, gender, number, function, kind, S)
-    if a:
-        L = [n, a]
+        adn_adj = adnominalAdjunct(person, gender, number, function, kind, S)
+    if adn_adj:
+        L = [noun_, adn_adj]
     else:
-        L = [n]
-    return Tree('noun-bar', L, {'head': n.info['head'], 'next': n.info['next']})
+        L = [noun_,]
+    return Tree('noun-bar', L, {'head': noun_.info['head'],
+                                'next': noun_.info['next']})
 
 
 @dump_args
@@ -167,7 +162,7 @@ def prepositionalPhrase(prep=None, person=None, gender=None,
     next = np.info['next']
     L = [np]
 
-    p = word_factory.getPreposition(prep, gender, number, next)
+    p = wf.getPreposition(prep, gender, number, next)
 
     L = [Tree("preposition", [p])] + L
 
@@ -179,14 +174,14 @@ def prepositionalPhrase(prep=None, person=None, gender=None,
 def verb(person=None, gender=None, number=None, tense=None,
          tran=None, S=None, OD=None, OI=None):
 
-    head = word_factory.getVerb(person, number, tense, tran, S=S, OD=OD, OI=OI)
+    head = wf.getVerb(person, number, tense, tran, S=S, OD=OD, OI=OI)
     L = [head]
 
     if tran is None:
         tran = head.info['entity'].transitivity
 
     if tran == 'vpi':
-        L = [word_factory.getPersonalPronoun(person, number, gender, 'R', 'a')] + L
+        L = [wf.getPersonalPronoun(person, number, gender, 'R', 'a')] + L
     if tran in ('vti', 'vtdi') and OI is None:
         xOI = prepositionalPhrase(function='OI',
                                   S=head.info['entity'].concept['OI'],
@@ -228,13 +223,12 @@ def clause(person=None, gender=None, number=None, tense=None,
 
     vp = verbPhrase(person, gender, number, tense, tran, S, OD, OI)
     obj_head = vp.info['head'].info['entity']
-    np = nounPhrase(person, gender, number, 'S',
-                    S=obj_head.concept['base'])
-
-    prep = None
+    np = nounPhrase(person, gender, number, 'S', S=obj_head.concept['base'])
 
     if OI:
         prep = obj_head.prep
+    else:
+        prep = None
 
     return Tree('clause', [np, vp], {'prep': prep})
 

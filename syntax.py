@@ -8,8 +8,7 @@ from utils import use_debug as utils_use_debug
 #utils_use_debug(True)
 
 import grammar
-import semantics
-import semantics.concept
+from semantics import verifySemantics
 import word_factory
 
 from tree import Tree
@@ -124,7 +123,7 @@ def nounPhrase(person=None, gender=None, number=None, function='S',
                kind=None, S=None):
 
     if person is None:
-        if S and semantics.verifySemantics(S, 'PESSOA'):
+        if S and verifySemantics(S, 'PESSOA'):
             person = aleatory('person')
         else: person = '3'
     if kind is None:
@@ -154,7 +153,7 @@ def prepositionalPhrase(prep=None, person=None, gender=None,
                         number=None, function='S', kind=None, S=None):
 
     if person is None:
-        if S and semantics.verifySemantics(S, 'PESSOA'):
+        if S and verifySemantics(S, 'PESSOA'):
             person = aleatory('person')
         else:
             person = '3'

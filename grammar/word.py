@@ -29,7 +29,7 @@ class Word:
         tense = self.info.get('tense')
         next = self.info.get('next')
 
-        if self.category in grammar.NOMINAL_CLASS_LIST:
+        if self.category in grammar.NOMINAL_CATEGORY_LIST:
             return self.value.term(gender, number)
         if self.category == 'verb':
             return self.value.term(person, number, tense)

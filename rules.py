@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
 
-import utils
+from utils import runFile
+from os.path import join as join_path
 
-def init(rule_dict, pwd='./data/rules'):
+def init(rule_dict, pwd=join_path('.', 'data', 'rules')):
     '''Initialize rules from file.'''
 
-    for elem in utils.runFile(pwd+'/rules_list.csv'):
+    for elem in runFile(join_path(pwd, 'rules_list.csv')):
         rule_dict[elem] = Rule(elem)
 
     rules_list = ['nominal', 'verbal']
     for rule_name in rules_list:
-        for elem in utils.runFile(pwd+'/'+rule_name+'.csv'):
+        for elem in runFile(join_path(pwd, rule_name+'.csv')):
             name, par, subs = elem.split(',')
             rule_dict[name].insert(par, subs)
+
+PERSON_NUMBER_POS = {
+    '1s': 0, '2s': 1, '3s': 2, '1p': 3, '2p': 4, '3p': 5,
+}
 
 class Rule:
     '''
@@ -36,7 +41,7 @@ class Rule:
             self.kind = 'verbal'
             for i in range(6):
                 self.subs[(par, i)] = subs.split('/')[0] + '/' + \
-                        subs[1:].split('/')[1].split(':')[i]
+                    subs[1:].split('/')[1].split(':')[i]
         elif subs[0] == '%':
             self.kind = 'nominal1'
             self.subs[tuple(par.split('/'))] = subs[1:]
@@ -44,25 +49,24 @@ class Rule:
             self.kind = 'nominal2'
             self.subs[tuple(par.split('/'))] = subs.split('/')
 
-    def apply(self, txt, par, pn=''):
+    def apply(self, txt, par, person_number=None):
         aux = txt
         if self.kind == 'nominal1':
             for k in self.subs:
-                if not filter(lambda x: x, \
-                                map(lambda y: k[y] != par[y] and \
-                                      k[y] != '*', range(len(k)))):
+                if not filter(lambda x: x,
+                              map(lambda y: k[y] != par[y] and k[y] != '*',
+                                  range(len(k)))):
                     return txt.split('/')[int(self.subs[k])-1]
             return txt
         elif self.kind == 'nominal2':
             for k in self.subs:
-                if not filter(lambda x: x, \
-                                map(lambda y: k[y] != par[y] and \
-                                      k[y] != '*', range(len(k)))):
+                if not filter(lambda x: x,
+                              map(lambda y: k[y] != par[y] and k[y] != '*',
+                                  range(len(k)))):
                     for j in self.subs[k]:
                         sub = j.split(':')
                         if sub[0][-1] == '$':
-                            aux = (aux + '$').replace(sub[0],
-                                                        sub[1])
+                            aux = (aux + '$').replace(sub[0], sub[1])
                         if aux[-1] == '$':
                             aux = aux[:-1]
                         else:
@@ -70,10 +74,7 @@ class Rule:
                     return aux
             return txt
         elif self.kind == 'verbal':
-            sub = self.subs[(par, {
-                        '1s': 0, '2s': 1, '3s': 2,
-                        '1p': 3, '2p': 4, '3p': 5
-                        }[pn])].split('/')
+            sub = self.subs[(par, PERSON_NUMBER_POS[person_number])].split('/')
             if sub[0][-1] == '$':
                 return (aux + '$').replace(sub[0][1:], sub[1])
             if aux[-1] == '$':

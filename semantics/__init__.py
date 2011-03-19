@@ -1,4 +1,4 @@
-from utils import runFile
+from utils import run_file
 from os.path import join as join_path
 import concept
 import entity
@@ -9,7 +9,7 @@ table = {}
 def init_knowledge(pwd):
     '''Initialize the concepts' knowledge.'''
 
-    for elem in runFile(join_path(pwd, 'concept.csv')):
+    for elem in run_file(join_path(pwd, 'concept.csv')):
         x = concept.from_line(elem)
         knowledge[x.index] = x
 
@@ -21,7 +21,7 @@ def init_category(category, pwd=join_path('.', 'data', 'knowledge')):
     
     table[category] = [
         entity.from_line(category, elem)
-        for elem in runFile(join_path(pwd, category+'.csv'))
+        for elem in run_file(join_path(pwd, category+'.csv'))
     ]
 
 def ancestors_and_self(x):

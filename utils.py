@@ -69,7 +69,7 @@ def randomize(*arg_list):
         return other_func
     return randomize
 
-def runFile(filepath):
+def run_file(filepath):
     '''A function for iterating over the data files.'''
 
     f = file(filepath, 'r')

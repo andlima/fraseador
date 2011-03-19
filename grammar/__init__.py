@@ -30,7 +30,7 @@ CONCEPTUAL_LIST = NOMINAL_CLASS_LIST + ['verb']
 TENSE_DICT = {'pi': 'present', 'ppi': 'past', 'fpi': 'future'}
 
 def init(extra, dic, rules, pwd):
-    for elem in utils.runFile(pwd+'/'+extra+'.csv'):
+    for elem in utils.run_file(pwd+'/'+extra+'.csv'):
         if extra in NOMINAL_CLASS_LIST:
             tmp = nominal.from_line(elem, rules)
         elif extra == 'verb':

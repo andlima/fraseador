@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from utils import runFile
+from utils import run_file
 from os.path import join as join_path
 
 def init(rule_dict, pwd=join_path('.', 'data', 'rules')):
     '''Initialize rules from file.'''
 
-    for elem in runFile(join_path(pwd, 'rules_list.csv')):
+    for elem in run_file(join_path(pwd, 'rules_list.csv')):
         rule_dict[elem] = Rule(elem)
 
     rules_list = ['nominal', 'verbal']
     for rule_name in rules_list:
-        for elem in runFile(join_path(pwd, rule_name+'.csv')):
+        for elem in run_file(join_path(pwd, rule_name+'.csv')):
             name, par, subs = elem.split(',')
             rule_dict[name].insert(par, subs)
 

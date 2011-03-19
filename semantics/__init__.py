@@ -1,37 +1,39 @@
-import utils
+from utils import runFile
+from os.path import join as join_path
 import concept
 import entity
 
 knowledge = {}
 table = {}
 
-def initKnowledge(pwd):
+def init_knowledge(pwd):
     '''Initialize the concepts' knowledge.'''
 
-    for elem in utils.runFile(pwd+'/concept.csv'):
+    for elem in runFile(join_path(pwd, 'concept.csv')):
         x = concept.from_line(elem)
         knowledge[x.index] = x
 
-def initCategory(category, pwd='./data/knowledge'):
+def init_category(category, pwd=join_path('.', 'data', 'knowledge')):
     '''
     Initializes the association between concepts and entities of a
     given lexical category.
     '''
     
-    table[category] = []
+    table[category] = [
+        entity.from_line(category, elem)
+        for elem in runFile(join_path(pwd, category+'.csv'))
+    ]
 
-    for elem in utils.runFile(pwd+'/'+category+'.csv'):
-        table[category].append(entity.from_line(category, elem))
-
-def _transitiveClosure(x):
-    # Obtains, recursively, all the ancestors of a given concept.
+def ancestors_and_self(x):
+    '''Obtains, recursively, all the ancestors of a given concept.'''
 
     if knowledge[x].parents is None:
         return [x]
-    return [x]+reduce(lambda p, q: p+q, map(_transitiveClosure,
-                                            knowledge[x].parents))
+    return [x] + reduce(lambda p, q: p+q,
+                        [ancestors_and_self(p)
+                         for p in knowledge[x].parents])
 
-def verifySemantics(general, particular):
+def verify_semantics(general, particular):
     '''
     Verifies if a given general concept is compatible with a given
     particular concept, i.e., if the first belongs is among the
@@ -40,4 +42,4 @@ def verifySemantics(general, particular):
     
     if '*' in (general, particular):
         return True
-    return general in _transitiveClosure(particular)
+    return general in ancestors_and_self(particular)

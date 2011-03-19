@@ -46,12 +46,12 @@ class Entity:
     def includes(self, s, kind='base'):
         if kind not in self.concept.keys():
             return False
-        return semantics.verifySemantics(self.concept[kind], s)
+        return semantics.verify_semantics(self.concept[kind], s)
 
     def belongs(self, s, kind='base'):
         if kind not in self.concept.keys():
             return False
-        return semantics.verifySemantics(s, self.concept[kind])
+        return semantics.verify_semantics(s, self.concept[kind])
 
 def from_line(category, line):
     '''Obtains an entity from a line.'''

@@ -10,7 +10,7 @@ from grammar.word import Word
 
 from vocabulary import Vocabulary
 
-from semantics import initKnowledge, initCategory
+from semantics import init_knowledge, init_category
 from semantics import table as semantics_table
 from semantics.concept import Concept
 
@@ -19,10 +19,10 @@ vocabulary = Vocabulary('./data/vocabulary')
 knowledge = Concept('./data/knowledge')
 
 
-initKnowledge('./data/knowledge')
+init_knowledge('./data/knowledge')
 
 for category in CONCEPTUAL_LIST:
-    initCategory(category, './data/knowledge')
+    init_category(category, './data/knowledge')
 
 
 def _word(category, index):

@@ -11,7 +11,7 @@ class Concept:
         self.index = index
         self.parents = parents
 
-def fromLine(elem):
+def from_line(elem):
     '''Obtains a concept from a line.'''
 
     data = elem.split(',') 

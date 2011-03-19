@@ -32,17 +32,17 @@ TENSE_DICT = {'pi': 'present', 'ppi': 'past', 'fpi': 'future'}
 def init(extra, dic, rules, pwd):
     for elem in utils.runFile(pwd+'/'+extra+'.csv'):
         if extra in NOMINAL_CLASS_LIST:
-            tmp = nominal.fromLine(elem, rules)
+            tmp = nominal.from_line(elem, rules)
         elif extra == 'verb':
-            tmp = verbal.fromLine(elem, rules)
+            tmp = verbal.from_line(elem, rules)
         elif extra == 'preposition':
-            tmp = preposition.fromLine(elem)
+            tmp = preposition.from_line(elem)
         elif extra == 'personal_pronoun':
-            tmp = personal_pronoun.fromLine(elem, rules)
+            tmp = personal_pronoun.from_line(elem, rules)
         elif extra == 'possessive_pronoun':
-            tmp = possessive_pronoun.fromLine(elem, rules)
+            tmp = possessive_pronoun.from_line(elem, rules)
         elif extra == 'contraction':
-            tmp = contraction.fromLine(elem, rules)
+            tmp = contraction.from_line(elem, rules)
         else:
             raise 'Unknown class: ' + extra
         dic[tmp.index] = tmp

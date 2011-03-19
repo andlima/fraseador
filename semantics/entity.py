@@ -53,7 +53,7 @@ class Entity:
             return False
         return semantics.verifySemantics(s, self.concept[kind])
 
-def fromLine(category, line):
+def from_line(category, line):
     '''Obtains an entity from a line.'''
 
     data = line.split(',')

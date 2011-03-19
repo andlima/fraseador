@@ -37,7 +37,7 @@ class Nominal:
             return False
         return True
 
-def fromLine(line, rules):
+def from_line(line, rules):
     '''Obtains a new Nominal instance from a line.'''
 
     data = line.split(',')

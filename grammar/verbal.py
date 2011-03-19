@@ -19,7 +19,7 @@ class Verbal:
 
         return self.rule.apply(self.index, tense, person + number)
 
-def fromLine(line, rules):
+def from_line(line, rules):
     '''Obtains a new Verbal instance from a line.'''
 
     rule, index = line.split(',')

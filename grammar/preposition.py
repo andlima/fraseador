@@ -29,5 +29,5 @@ class Preposition:
     def contracts(self, next):
         return next in self.contractions
 
-def fromLine(line):
+def from_line(line):
     return Preposition(line)

@@ -67,11 +67,11 @@ def getNominal(category, gender, number, S=None):
                      {'gender': gender, 'number': number, 'entity': word})
 
 
-def getPreposition(prep, gender, number, next=None):
+def getPreposition(preposition, gender, number, next=None):
     category = 'preposition'
-    if prep is None:
-        prep = random.choice(vocabulary.data[category].keys())
-    return Word(_word(category, prep), category,
+    if preposition is None:
+        preposition = random.choice(vocabulary.data[category].keys())
+    return Word(_word(category, preposition), category,
                 {'gender': gender, 'number': number, 'next': next})
 
 

@@ -7,17 +7,15 @@ class Entity:
     '''
 
     def __init__(self, index, category, concept, gender=None,
-                 number=None, prep=None, transitivity=None):
+                 number=None, preposition=None, transitivity=None):
         '''
         Attributes:
         - self.index: identifies the word;
         - self.category: the word's lexical category;
         - self.concept: the word's accepted concepts;
-        - self.gender: for an adjective pronoun, its gender (in
-          grammar.GENDERS or '*');
-        - self.number: for an adjective pronoun, its number (in
-          grammar.NUMBERS or '*');
-        - self.prep: for a verb, preposition, if any;
+        - self.gender: for an adjective pronoun, its gender;
+        - self.number: for an adjective pronoun, its number;
+        - self.preposition: for a verb, its preposition, if any;
         - self.transitivity: for a verb, its transitivity.
         '''
         
@@ -26,13 +24,13 @@ class Entity:
         self.concept = concept
         self.gender = gender
         self.number = number
-        self.prep = prep
+        self.preposition = preposition
         self.transitivity = transitivity
 
     def validateUse(self, use, gender, number):
         '''
-        Validates whether the entity is compatible with a
-        gender, a number and a use.
+        Validates whether the entity is compatible with a gender, a
+        number and a use.
         '''
 
         if use != self.concept['use']:
@@ -71,29 +69,28 @@ def from_line(category, line):
         else:
             gender = '*'
             number = '*'
-            return Entity(index, category, concept, gender,
-                          number)
+            return Entity(index, category, concept, gender, number)
 
     if category == 'verb':
         # 0: subject concepts
         # 1: verb index
         # 2: verb transitivity
         transitivity = data[2]
-        prep = None
+        preposition = None
         if transitivity == 'vtd':
             # 3: direct object
             concept['OD'] = data[3]
         elif transitivity == 'vti':
             # 3: preposition / indirect object
-            prep = data[3].split('+')[0]
+            preposition = data[3].split('+')[0]
             concept['OI'] = data[3].split('+')[1]
         elif transitivity == 'vtdi':
             # 3: direct object
             # 4: preposition / indirect object
             concept['OD'] = data[3]
-            prep = data[4].split('+')[0]
+            preposition = data[4].split('+')[0]
             concept['OI'] = data[4].split('+')[1]
-        return Entity(index, category, concept, prep=prep,
+        return Entity(index, category, concept, preposition=preposition,
                       transitivity=transitivity)
 
     return Entity(index, category, concept)

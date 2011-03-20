@@ -56,10 +56,10 @@ def adnominalAdjunct(person=None, gender=None, number=None, function='S',
                     # menino de quem a mãe gosta
                     # bola da qual o menino gosta
                     that_clause = clause(tran='vti', OI=S)
-                    prep = wf.getPreposition(
-                        that_clause.info['prep'], gender,
+                    preposition = wf.getPreposition(
+                        that_clause.info['preposition'], gender,
                         number, None)
-                    L = [prep,
+                    L = [preposition,
                          wf.getRelativePronoun(
                             gender, number, S),
                          that_clause]
@@ -144,7 +144,7 @@ def nounPhrase(person=None, gender=None, number=None, function='S',
 
 @dump_args
 @randomize('gender', 'number')
-def prepositionalPhrase(prep=None, person=None, gender=None,
+def prepositionalPhrase(preposition=None, person=None, gender=None,
                         number=None, function='S', kind=None, S=None):
 
     if person is None:
@@ -162,7 +162,7 @@ def prepositionalPhrase(prep=None, person=None, gender=None,
     next = np.info['next']
     L = [np]
 
-    p = wf.getPreposition(prep, gender, number, next)
+    p = wf.getPreposition(preposition, gender, number, next)
 
     L = [Tree("preposition", [p])] + L
 
@@ -185,7 +185,7 @@ def verb(person=None, gender=None, number=None, tense=None,
     if tran in ('vti', 'vtdi') and OI is None:
         xOI = prepositionalPhrase(function='OI',
                                   S=head.info['entity'].concept['OI'],
-                                  prep=head.info['entity'].prep)
+                                  preposition=head.info['entity'].preposition)
         L = L + [xOI]
     if tran in ('vtd', 'vtdi') and OD is None:
         xOD = nounPhrase(function='OD',
@@ -224,9 +224,9 @@ def clause(person=None, gender=None, number=None, tense=None,
     vp = verbPhrase(person, gender, number, tense, tran, S, OD, OI)
     obj_head = vp.info['head'].info['entity']
     np = nounPhrase(person, gender, number, 'S', S=obj_head.concept['base'])
-    prep = obj_head.prep if OI else None
+    preposition = obj_head.preposition if OI else None
 
-    return Tree('clause', [np, vp], {'prep': prep})
+    return Tree('clause', [np, vp], {'preposition': preposition})
 
 
 if __name__ == '__main__':

@@ -25,6 +25,8 @@ class Vocabulary:
 
         # Associates contractions to corresponding prepositions
         for contraction in self.data['contraction'].values():
-            prep = self.data['preposition'][contraction.prep]
-            prep.set_contraction((contraction.next, contraction.category),
-                                self.data['contraction'][contraction.index])
+            preposition = self.data['preposition'][contraction.preposition]
+            preposition.set_contraction(
+                (contraction.next, contraction.category),
+                self.data['contraction'][contraction.index]
+            )

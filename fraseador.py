@@ -10,12 +10,12 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 
-import syntax
+from syntax import clause
 
 def phrases(n=20, lf=' '):
     phrase_list = []
     for i in range(n):
-        phrase_list.append(syntax.clause().__repr__().capitalize() + '.')
+        phrase_list.append(repr(clause()).capitalize() + '.')
     return lf.join(phrase_list)
 
 class MainPage(webapp.RequestHandler):
@@ -29,14 +29,12 @@ class MainPage(webapp.RequestHandler):
             'text': text,
             'num_phrases': self.request.get('num_phrases'),
             'checked': 'checked' if self.request.get('break_line') == 'true' else ''
-            }
+        }
 
         path = os.path.join(os.path.dirname(__file__), 'index.html')
         self.response.out.write(template.render(path, template_values))
 
-application = webapp.WSGIApplication(
-                                     [('/', MainPage)],
-                                     debug=True)
+application = webapp.WSGIApplication([('/', MainPage)], debug=True)
 
 def main():
     run_wsgi_app(application)

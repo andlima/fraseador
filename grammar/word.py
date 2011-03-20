@@ -39,4 +39,4 @@ class Word:
             return self.value.term(gender, number)
         if self.category == 'personal_pronoun':
             return self.value.term(gender, number)
-        raise 'Unknown lexical category: ' + self.category
+        raise UnknownCategoryError(self.category)

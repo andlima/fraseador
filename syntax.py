@@ -13,6 +13,21 @@ import word_factory as wf
 from tree import Tree
 #Tree.debug = True
 
+class NounNotThirdPersonError(Exception):
+    '''
+    The noun() phrase method cannot handle something like a noun not
+    in the third person.  Otherwise, it would return errors like "o
+    menino [third person] beijei [first person] a menina", with the
+    verb and the subject disagreeing.
+
+    If you ask explicitly for a noun, it must be on the third person.
+    '''
+    pass
+
+class NounPhraseKindError(Exception):
+    '''Invalid kind for noun phrase.'''
+    pass
+
 @dump_args
 def determiner(person=None, gender=None, number=None, function='S',
                kind=None, S=None):
@@ -83,7 +98,11 @@ def noun(person=None, gender=None, number=None, function='S',
 
     if kind == 'noun':
         if person != '3':
-            raise 'Noun phrase for NOUN kind must be on the 3rd person'
+            raise NounNotThirdPersonError(
+                'Phrase for noun not on the 3rd person: %s' % str(
+                    (person, gender, number, function, kind, S)
+                )
+            )
         head = wf.getNominal('noun', gender, number, S)
         next = (head.value.index, 'noun')
     elif kind == 'personal_pronoun':
@@ -92,7 +111,10 @@ def noun(person=None, gender=None, number=None, function='S',
             person, number, gender, function, tonic)
         next = (head.value.index, 'personal_pronoun')
     else:
-        raise 'Invalid kind for noun phrase', kind
+        raise NounPhraseKindError(
+            "Invalid argument `kind`=%s for noun(). Should be one of: "
+            "['noun', 'personal_pronoun']. " % repr(kind)
+        )
     return Tree('noun', [head], {'head': head, 'next': next})
 
 
@@ -209,7 +231,7 @@ def verbBar(person=None, gender=None, number=None, tense=None,
 @dump_args
 @randomize('person', 'gender', 'number', 'tense')
 def verbPhrase(person=None, gender=None, number=None, tense=None,
-                   tran=None, S=None, OD=None, OI=None):
+               tran=None, S=None, OD=None, OI=None):
     vb = verbBar(person, gender, number, tense, tran, S, OD, OI)
     L = [vb]
 
@@ -234,5 +256,5 @@ if __name__ == '__main__':
     lf = '\n'
     phrase_list = []
     for i in range(n):
-        phrase_list.append(clause().__repr__().capitalize() + '.')
+        phrase_list.append(repr(clause()).capitalize() + '.')
     print lf.join(phrase_list)

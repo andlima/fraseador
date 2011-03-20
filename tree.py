@@ -64,12 +64,12 @@ class Tree:
         if Tree.debug:
             if self.children:
                 phrase = '("' + str(self.value) + '" ' + ' '.join(
-                    map(lambda z: z.__repr__(), self.children)) + ')'
+                    map(lambda z: repr(z), self.children)) + ')'
             else:
                 if hasattr(self.value, 'category'):
-                    phrase = self.value.category + ":" + self.value.__repr__()
+                    phrase = self.value.category + ":" + repr(self.value)
                 else:
-                    phrase = "<>:" + self.value.__repr__()
+                    phrase = "<>:" + repr(self.value)
         else:
             words = self.asList()
             for i, word in enumerate(words[:-1]):
@@ -81,9 +81,9 @@ class Tree:
                          if not i.info.get('hide', False)]
 
             if self.children:
-                phrase = ' '.join(map(lambda z: z.__repr__(), words))
+                phrase = ' '.join(map(lambda z: repr(z), words))
             else:
-                phrase = self.value.__repr__()
+                phrase = repr(self.value)
 
         if self.info.has_key("pos"):
             phrase += self.info["pos"]

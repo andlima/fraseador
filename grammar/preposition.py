@@ -23,7 +23,7 @@ class Preposition:
         else:
             return self.index
 
-    def addContraction(self, next, resulting_word):
+    def set_contraction(self, next, resulting_word):
         self.contractions[next] = resulting_word
 
     def contracts(self, next):

@@ -1,12 +1,9 @@
-import nominal
-
 class Contraction:
     '''
     Data model for contractions of preposition with following words.
     '''
 
-    def __init__(self, index, rule, category, prep, next,
-                 content):
+    def __init__(self, index, rule, category, prep, next, content):
         '''
         Attributes:
         - self.index: identifies the contraction;
@@ -26,8 +23,8 @@ class Contraction:
 
     def term(self, gender, number):
         '''
-        Returns an instance of the contraction, declinating it
-        according to the defined rule.
+        Returns an instance of the contraction, declining it according
+        to the defined rule.
         '''
 
         return self.rule.apply(self.content, (gender, number))
@@ -41,6 +38,4 @@ def from_line(line, rules):
     (prep, next) = data[2].split('+')
     index = (prep, next, category)
     content = data[3]
-    return Contraction(index, rule, category, prep, next,
-                       content)
-
+    return Contraction(index, rule, category, prep, next, content)

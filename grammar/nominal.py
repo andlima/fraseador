@@ -1,7 +1,7 @@
 class Nominal:
     ''' 
     Data model for noun-like words (nouns, adjectives, articles and
-    pronouns.
+    pronouns).
     '''
 
     def __init__(self, index, rule, gender, number, content):
@@ -22,8 +22,8 @@ class Nominal:
 
     def term(self, gender, number):
         '''
-        Returns an instance of the word, declinating it according
-        to the defined rule.
+        Returns an instance of the word, declining it according to the
+        defined rule.
         '''
 
         return self.rule.apply(self.content, (gender, number))

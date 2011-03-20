@@ -13,9 +13,8 @@ from google.appengine.ext import db
 from syntax import clause
 
 def phrases(n=20, lf=' '):
-    phrase_list = []
-    for i in range(n):
-        phrase_list.append(repr(clause()).capitalize() + '.')
+    phrase_list = [repr(clause()).capitalize() + '.'
+                   for i in range(n)]
     return lf.join(phrase_list)
 
 class MainPage(webapp.RequestHandler):

@@ -11,10 +11,11 @@ class Concept:
         self.index = index
         self.parents = parents
 
+
 def from_line(elem):
     '''Obtains a concept from a line.'''
 
-    data = elem.split(',') 
+    data = elem.split(',')
     index = data[0]
     parents = None
     if len(data) == 2:

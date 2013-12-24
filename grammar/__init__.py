@@ -37,8 +37,10 @@ CONCEPTUAL_LIST = NOMINAL_CATEGORY_LIST + ['verb']
 
 TENSE_DICT = {'pi': 'present', 'ppi': 'past', 'fpi': 'future'}
 
+
 class UnknownCategoryError(Exception):
     pass
+
 
 def init(extra, dic, rules, pwd):
     if extra not in EXTRA_LIST:

@@ -1,6 +1,7 @@
 from nominal import Nominal
 from nominal import from_line as nominal_from_line
 
+
 class PersonalPronoun(Nominal):
     '''Data model for personal pronouns.'''
 
@@ -32,6 +33,7 @@ class PersonalPronoun(Nominal):
         if self.tonic != tonic:
             return False
         return True
+
 
 def from_line(line, rules):
     '''Obtains a new PersonalPronoun instance from a line.'''

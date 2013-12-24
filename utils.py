@@ -5,6 +5,8 @@ import random
 import grammar
 
 __debug = False
+
+
 def use_debug(ud):
     '''
     Defines whether or not to use debug. When debugging, will dump
@@ -13,9 +15,11 @@ def use_debug(ud):
     global __debug
     __debug = ud
 
+
 def percent(n):
     '''Returns true for n percent of the calls.'''
     return (random.randrange(100) < n)
+
 
 def aleatory(s):
     '''Return a random person/gender/number/tense element.'''
@@ -32,6 +36,8 @@ def aleatory(s):
 
 
 _depth = 0
+
+
 def dump_args(func):
     '''A decorator for dumping a function's arguments.'''
 
@@ -40,24 +46,28 @@ def dump_args(func):
 
     argnames = func.func_code.co_varnames[:func.func_code.co_argcount]
     fname = func.func_name
+
     def echo_func(*args, **kwargs):
         global _depth
         _depth += 1
         d = _depth * '  '
         print '\t$$', d, fname + ":", ', '.join(
             '%s=%r' % entry
-            for entry in zip(argnames,args) + kwargs.items())
+            for entry in zip(argnames, args) + kwargs.items())
         x = func(*args, **kwargs)
         print '\t## ', d + '->', x
         _depth -= 1
         return x
+
     return echo_func
+
 
 def randomize(*arg_list):
     '''A decorator for randomizing arguments provided as None.'''
 
     def randomize(func):
         argnames = func.func_code.co_varnames[:func.func_code.co_argcount]
+
         def other_func(*args, **kwargs):
             tmp = {}
             for k, v in zip(argnames, args) + kwargs.items():
@@ -66,8 +76,11 @@ def randomize(*arg_list):
                 if k not in tmp.keys():
                     tmp[k] = aleatory(k)
             return func(**tmp)
+
         return other_func
+
     return randomize
+
 
 def run_file(filepath):
     '''A function for iterating over the data files.'''
@@ -78,4 +91,3 @@ def run_file(filepath):
         if elem != '' and elem[0] != '#':
             yield elem
     f.close()
-

@@ -3,8 +3,6 @@
 
 import random
 
-import utils
-
 from grammar import CONCEPTUAL_LIST
 from grammar.word import Word
 
@@ -32,6 +30,7 @@ def _word(category, index):
 class SemanticCompatibilityError(Exception):
     pass
 
+
 def getVerb(person, number, tense, tran=None, S=None, OD=None, OI=None):
     category = 'verb'
     lista = semantics_table[category]
@@ -44,9 +43,11 @@ def getVerb(person, number, tense, tran=None, S=None, OD=None, OI=None):
     if tran is not None:
         lista = [x for x in lista if x.transitivity == tran]
     if not lista:
-        raise SemanticCompatibilityError('No word found for %s' % str(
+        raise SemanticCompatibilityError(
+            'No word found for %s' % str(
                 (category, person, number, tense, tran, S, OD, OI)
-              ))
+            )
+        )
     word = random.choice(lista)
     return Word(_word(category, word.index), category,
                 {'person': person, 'number': number,
@@ -64,12 +65,18 @@ def getNominal(category, gender, number, S=None):
     else:
         lista = [x for x in lista if x.belongs(S)]
     if not lista:
-        raise SemanticCompatibilityError('No word found for %s' % str(
+        raise SemanticCompatibilityError(
+            'No word found for %s' % str(
                 (category, gender, number, S)
-              ))
+            )
+        )
     word = random.choice(lista)
-    return Word(_word(category, word.index), category,
-                     {'gender': gender, 'number': number, 'entity': word})
+
+    return Word(
+        _word(category, word.index),
+        category,
+        {'gender': gender, 'number': number, 'entity': word}
+    )
 
 
 def getPreposition(preposition, gender, number, next=None):
@@ -94,9 +101,11 @@ def getPossessivePronoun(gender, number, idp, idn):
     lista = [x for x in vocabulary.data[category].values()
              if x.validate(gender, number, idp, idn)]
     if not lista:
-        raise SemanticCompatibilityError('No word found for %s' % str(
+        raise SemanticCompatibilityError(
+            'No word found for %s' % str(
                 (category, gender, number)
-              ))
+            )
+        )
     word = random.choice(lista)
     return Word(_word(category, word.index), category,
                 {'gender': gender, 'number': number})
@@ -111,9 +120,11 @@ def getRelativePronoun(gender, number, S=None):
     else:
         lista = [x for x in lista if x.belongs('PESSOA')]
     if not lista:
-        raise SemanticCompatibilityError('No word found for %s' % str(
+        raise SemanticCompatibilityError(
+            'No word found for %s' % str(
                 (category, gender, number, S)
-              ))
+            )
+        )
     word = random.choice(lista)
     return Word(_word(category, word.index), category,
                 {'gender': gender, 'number': number, 'entity': word})
@@ -125,9 +136,11 @@ def getAdjectivePronoun(gender, number, use):
              if (_word(category, x.index).validate(gender, number) and
                  x.validateUse(use, gender, number))]
     if not lista:
-        raise SemanticCompatibilityError('No word found for %s' % str(
+        raise SemanticCompatibilityError(
+            'No word found for %s' % str(
                 (gender, number, use)
-              ))
+            )
+        )
     word = random.choice(lista)
     return Word(_word(category, word.index), category,
                 {'gender': gender, 'number': number, 'entity': word})

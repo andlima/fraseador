@@ -1,5 +1,5 @@
 class Nominal:
-    ''' 
+    '''
     Data model for noun-like words (nouns, adjectives, articles and
     pronouns).
     '''
@@ -15,7 +15,7 @@ class Nominal:
         '''
 
         self.index = index
-        self.rule = rule 
+        self.rule = rule
         self.gender = gender
         self.number = number
         self.content = content
@@ -36,6 +36,7 @@ class Nominal:
         if self.number not in (number, '*'):
             return False
         return True
+
 
 def from_line(line, rules):
     '''Obtains a new Nominal instance from a line.'''

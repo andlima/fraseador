@@ -3,6 +3,7 @@
 from utils import run_file
 from os.path import join as join_path
 
+
 def init(rule_dict, pwd=join_path('.', 'data', 'rules')):
     '''Initialize rules from file.'''
 
@@ -18,6 +19,7 @@ def init(rule_dict, pwd=join_path('.', 'data', 'rules')):
 PERSON_NUMBER_POS = {
     '1s': 0, '2s': 1, '3s': 2, '1p': 3, '2p': 4, '3p': 5,
 }
+
 
 class Rule:
     '''

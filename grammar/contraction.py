@@ -29,6 +29,7 @@ class Contraction:
 
         return self.rule.apply(self.content, (gender, number))
 
+
 def from_line(line, rules):
     '''Obtains a new Nominal instance from a line.'''
 

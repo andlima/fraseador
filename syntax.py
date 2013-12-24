@@ -1,10 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import random
-
 from utils import dump_args, percent, aleatory, randomize
-from utils import use_debug as utils_use_debug
+#from utils import use_debug as utils_use_debug
 #utils_use_debug(True)
 
 from semantics import verify_semantics
@@ -12,6 +10,7 @@ import word_factory as wf
 
 from tree import Tree
 #Tree.debug = True
+
 
 class NounNotThirdPersonError(Exception):
     '''
@@ -24,9 +23,11 @@ class NounNotThirdPersonError(Exception):
     '''
     pass
 
+
 class NounPhraseKindError(Exception):
     '''Invalid kind for noun phrase.'''
     pass
+
 
 @dump_args
 def determiner(person=None, gender=None, number=None, function='S',
@@ -74,17 +75,20 @@ def adnominalAdjunct(person=None, gender=None, number=None, function='S',
                     preposition = wf.getPreposition(
                         that_clause.info['preposition'], gender,
                         number, None)
-                    L = [preposition,
-                         wf.getRelativePronoun(
-                            gender, number, S),
-                         that_clause]
-                
+                    L = [
+                        preposition,
+                        wf.getRelativePronoun(
+                            gender, number, S
+                        ),
+                        that_clause
+                    ]
+
     elif kind == 'personal_pronoun' and function == 'S':
         if percent(20):
             # eu que corri
             L = [wf.getRelativePronoun(gender, number, None),
                  verbPhrase(person, gender, number, S=S)]
-        
+
     if L:
         return Tree('adnominal adjunct', L, {})
     else:
@@ -129,7 +133,7 @@ def nounBar(person=None, gender=None, number=None, function='S',
     if adn_adj:
         L = [noun_, adn_adj]
     else:
-        L = [noun_,]
+        L = [noun_, ]
     return Tree('noun-bar', L, {'head': noun_.info['head'],
                                 'next': noun_.info['next']})
 
@@ -142,7 +146,8 @@ def nounPhrase(person=None, gender=None, number=None, function='S',
     if person is None:
         if S and verify_semantics(S, 'PESSOA'):
             person = aleatory('person')
-        else: person = '3'
+        else:
+            person = '3'
     if kind is None:
         if person != '3' or percent(15):
             kind = 'personal_pronoun'

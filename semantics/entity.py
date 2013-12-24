@@ -1,5 +1,6 @@
 import semantics
 
+
 class Entity:
     '''
     Defines an entity, which relates a specific word to its
@@ -18,7 +19,7 @@ class Entity:
         - self.preposition: for a verb, its preposition, if any;
         - self.transitivity: for a verb, its transitivity.
         '''
-        
+
         self.index = index
         self.category = category
         self.concept = concept
@@ -50,6 +51,7 @@ class Entity:
         if kind not in self.concept.keys():
             return False
         return semantics.verify_semantics(s, self.concept[kind])
+
 
 def from_line(category, line):
     '''Obtains an entity from a line.'''

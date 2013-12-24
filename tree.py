@@ -11,7 +11,7 @@ class Tree:
     debug = False
 
     def __init__(self, value, children=None, info=None):
-        ''' 
+        '''
         Attributes:
         - self.value: the root value;
         - self.children: a list of the children; None for leaves;
@@ -77,15 +77,15 @@ class Tree:
                     if word.value.contracts(word.info['next']):
                         words[i+1].info['hide'] = True
 
-            words = [i for i in words \
-                         if not i.info.get('hide', False)]
+            words = [i for i in words
+                     if not i.info.get('hide', False)]
 
             if self.children:
                 phrase = ' '.join(map(lambda z: repr(z), words))
             else:
                 phrase = repr(self.value)
 
-        if self.info.has_key("pos"):
+        if "pos" in self.info:
             phrase += self.info["pos"]
 
         return phrase

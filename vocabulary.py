@@ -1,12 +1,13 @@
 import grammar
 import rules
 
+
 class Vocabulary:
     '''
     Class that centralizes the known words of different lexical
     categories.
     '''
-    
+
     def __init__(self, pwd):
         '''
         Attribute:

@@ -1,6 +1,7 @@
 from nominal import Nominal
 from nominal import from_line as nominal_from_line
 
+
 class PossessivePronoun(Nominal):
     '''Data model for possessive pronouns.'''
 
@@ -16,7 +17,7 @@ class PossessivePronoun(Nominal):
         '''
 
         self.index = index
-        self.rule = rule 
+        self.rule = rule
         self.gender = gender
         self.number = number
         self.content = content
@@ -33,6 +34,7 @@ class PossessivePronoun(Nominal):
         if self.ant_number not in (ant_number, '*'):
             return False
         return True
+
 
 def from_line(line, rules):
     '''Obtains a new PersonalPronoun instance from a line.'''

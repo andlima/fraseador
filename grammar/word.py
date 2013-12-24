@@ -1,4 +1,6 @@
 from grammar import NOMINAL_CATEGORY_LIST
+from . import UnknownCategoryError
+
 
 class Word:
     '''A word, described as an instance of a lexical category.'''
@@ -22,7 +24,7 @@ class Word:
         Returns a representation for the word, obtained by means of
         its lexical category.
         '''
-        
+
         person = self.info.get('person')
         gender = self.info.get('gender')
         number = self.info.get('number')

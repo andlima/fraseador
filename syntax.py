@@ -254,12 +254,3 @@ def clause(person=None, gender=None, number=None, tense=None,
     preposition = obj_head.preposition if OI else None
 
     return Tree('clause', [np, vp], {'preposition': preposition})
-
-
-if __name__ == '__main__':
-    n = 20
-    lf = '\n'
-    phrase_list = []
-    for i in range(n):
-        phrase_list.append(repr(clause()).capitalize() + '.')
-    print lf.join(phrase_list)

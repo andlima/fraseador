@@ -19,7 +19,7 @@ from syntax import clause
 
 
 def main():
-    arguments = docopt(__doc__, version='1.0.0rc2')
+    arguments = docopt(__doc__, version='0.1.0')
     number = int(arguments.get('--number'))
     lines = bool(arguments.get('--lines'))
     end = '\n' if lines else ' '
